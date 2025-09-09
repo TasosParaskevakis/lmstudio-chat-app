@@ -1,0 +1,12 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Simple prose styling */
+.message-content pre {
+  @apply bg-gray-900 text-gray-100 p-3 rounded-md overflow-x-auto;
+}
+.message-content code {
+  @apply bg-gray-200 rounded px-1 py-0.5;
+}
+
