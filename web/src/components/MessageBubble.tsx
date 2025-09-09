@@ -23,7 +23,7 @@ export function MessageBubble({ role, content }: Props) {
   return (
     <div className={`w-full flex ${isUser ? 'justify-end' : 'justify-start'} my-2`}>
       <div className={`${isUser ? 'bg-blue-600 text-white' : 'bg-white'} max-w-[75%] rounded-lg shadow px-4 py-2`}>
-        <div ref={ref} className={`message-content prose prose-sm max-w-none ${isUser ? '' : ''}`}>
+        <div ref={ref} className={`message-content prose prose-sm max-w-none ${isUser ? 'prose-invert text-white' : ''}`}>
           <ReactMarkdown
             remarkPlugins={[remarkGfm, remarkBreaks]}
             components={{
