@@ -41,6 +41,12 @@ Using the app
 - Messages stream live; history persists across reloads
 - Switching models mid‑chat keeps history and uses it for context
 
+One‑command dev startup
+- From repo root: `npm run dev`
+  - Runs server and web in parallel using `run-dev.sh`
+  - First run installs missing dependencies and ensures Vite React plugin is present
+  - Press Ctrl+C to stop both
+
 LM Studio integration
 - The app calls LM Studio’s OpenAI‑compatible API at `LMSTUDIO_BASE_URL`
   - `GET /v1/models` for available models
