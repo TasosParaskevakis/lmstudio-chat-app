@@ -53,8 +53,17 @@ chatRouter.post('/', async (req, res) => {
     await prisma.message.create({ data: { chatId, role: 'user', content: message } });
     await prisma.chat.update({ where: { id: chatId }, data: { updatedAt: new Date(), model: status.activeModelName } });
 
-    // Build context (already includes the just-persisted user message and system prompt)
-    const messages = await buildContextMessages(chatId, env.MAX_CONTEXT_TOKENS);
+    // Build context
+    let messages: any[];
+    if (env.HISTORY_ENABLED) {
+      messages = await buildContextMessages(chatId, env.MAX_CONTEXT_TOKENS);
+    } else {
+      // Stateless mode: only system + current user message
+      const chat = await prisma.chat.findUnique({ where: { id: chatId } });
+      messages = [];
+      if (chat?.systemPrompt) messages.push({ role: 'system', content: chat.systemPrompt });
+      messages.push({ role: 'user', content: message });
+    }
 
     const body = {
       model: status.activeModelName,

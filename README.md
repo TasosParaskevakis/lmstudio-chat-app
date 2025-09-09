@@ -15,7 +15,8 @@ Server setup
      - `PORT=3001` (default)
      - `DATABASE_URL="file:./dev.db"` (default)
      - `LMSTUDIO_BASE_URL=http://localhost:1234/v1` (LM Studio default)
-     - `CORS_ORIGIN=http://localhost:5173`
+     - `CORS_ORIGIN=*` (for dev; or comma-separated origins)
+     - `HISTORY_ENABLED=true` (set to `false` to not include prior chat history)
 
 2) Install deps and create DB
    - `cd server`
@@ -26,7 +27,7 @@ Server setup
 Frontend setup
 1) Configure environment (optional)
    - Create `web/.env` with:
-     - `VITE_API_BASE=http://localhost:3001`
+     - `VITE_API_BASE=auto` (auto-detect server on same host)
 
 2) Install and run
    - `cd web`
