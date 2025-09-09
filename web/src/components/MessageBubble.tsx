@@ -1,5 +1,8 @@
 import { useEffect, useRef } from 'react';
 import hljs from 'highlight.js';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import remarkBreaks from 'remark-breaks';
 
 type Props = {
   role: 'user'|'assistant'|'system';
@@ -20,28 +23,29 @@ export function MessageBubble({ role, content }: Props) {
   return (
     <div className={`w-full flex ${isUser ? 'justify-end' : 'justify-start'} my-2`}>
       <div className={`${isUser ? 'bg-blue-600 text-white' : 'bg-white'} max-w-[75%] rounded-lg shadow px-4 py-2`}>
-        <div ref={ref} className="message-content prose prose-sm max-w-none whitespace-pre-wrap">
-          {renderMarkdown(content)}
+        <div ref={ref} className={`message-content prose prose-sm max-w-none ${isUser ? '' : ''}`}>
+          <ReactMarkdown
+            remarkPlugins={[remarkGfm, remarkBreaks]}
+            components={{
+              code({inline, className, children, ...props}) {
+                const language = /language-/.test(className || '') ? className : undefined;
+                if (inline) {
+                  return <code className={className} {...props}>{children}</code>;
+                }
+                return (
+                  <pre><code className={language} {...props}>{children}</code></pre>
+                );
+              },
+              a({href, children, ...props}) {
+                return <a href={href} target="_blank" rel="noreferrer" {...props}>{children}</a>;
+              }
+            }}
+          >
+            {content}
+          </ReactMarkdown>
         </div>
       </div>
     </div>
   );
 }
-
-// very light markdown/code fence rendering without heavy deps
-function renderMarkdown(text: string) {
-  // code fences ```lang\ncode\n```
-  const parts: any[] = [];
-  const regex = /```(\w+)?\n([\s\S]*?)```/g;
-  let lastIndex = 0;
-  let m: RegExpExecArray | null;
-  while ((m = regex.exec(text)) !== null) {
-    const [full, lang, code] = m;
-    if (m.index > lastIndex) parts.push(<span key={`t${lastIndex}`}>{text.slice(lastIndex, m.index)}</span>);
-    parts.push(<pre key={`c${m.index}`}><code className={lang ? `language-${lang}` : ''}>{code}</code></pre>);
-    lastIndex = m.index + full.length;
-  }
-  if (lastIndex < text.length) parts.push(<span key={`t${lastIndex}`}>{text.slice(lastIndex)}</span>);
-  return parts;
-}
-
+ 

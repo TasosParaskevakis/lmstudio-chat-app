@@ -66,6 +66,10 @@ echo "Starting web..."
   if [[ ! -d node_modules ]]; then
     npm i
   fi
+  # Ensure newly added deps are installed
+  if [[ ! -d node_modules/react-markdown || ! -d node_modules/remark-gfm || ! -d node_modules/remark-breaks || ! -d node_modules/@tailwindcss ]]; then
+    npm i
+  fi
   # Ensure Vite React plugin exists (common issue)
   if [[ ! -d node_modules/@vitejs/plugin-react ]]; then
     npm i -D @vitejs/plugin-react
