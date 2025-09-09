@@ -8,7 +8,10 @@ import { chatRouter } from './routes/chat.js';
 import { modelManager } from './modelManager.js';
 
 const app = express();
-app.use(cors({ origin: env.CORS_ORIGIN, credentials: false }));
+// Support multiple CORS origins via comma-separated env or wildcard
+const origins = env.CORS_ORIGIN.split(',').map(o => o.trim());
+const corsOptions: cors.CorsOptions = origins.includes('*') ? { origin: true } : { origin: origins };
+app.use(cors(corsOptions));
 app.use(express.json());
 
 app.get('/api/health', (req, res) => res.json({ ok: true }));
@@ -30,4 +33,3 @@ async function start() {
 }
 
 start();
-

@@ -47,6 +47,15 @@ One‑command dev startup
   - First run installs missing dependencies and ensures Vite React plugin is present
   - Press Ctrl+C to stop both
 
+Access from another device (LAN)
+- Ensure your dev machine IP is reachable, e.g. `10.1.1.9` on the same network
+- Vite dev server now binds to all interfaces (0.0.0.0); open `http://10.1.1.9:5173`
+- API base defaults to `http://<current-hostname>:3001` if `VITE_API_BASE` is empty or `auto`
+  - To use auto detection, set `web/.env`: `VITE_API_BASE=auto`
+- CORS: set multiple origins or wildcard in `server/.env`, e.g.:
+  - `CORS_ORIGIN=http://localhost:5173,http://10.1.1.9:5173` or `CORS_ORIGIN=*`
+- Firewall: allow inbound 5173 (Vite) and 3001 (server) on your OS firewall
+
 LM Studio integration
 - The app calls LM Studio’s OpenAI‑compatible API at `LMSTUDIO_BASE_URL`
   - `GET /v1/models` for available models

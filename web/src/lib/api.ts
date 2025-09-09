@@ -1,4 +1,8 @@
-const BASE = import.meta.env.VITE_API_BASE || 'http://localhost:3001';
+// Auto-detect server base if env is 'auto' or not set
+const envBase = (import.meta.env.VITE_API_BASE as string | undefined) || '';
+const BASE = (!envBase || envBase === 'auto')
+  ? `${location.protocol}//${location.hostname}:3001`
+  : envBase;
 
 export async function apiGet<T>(path: string): Promise<T> {
   const resp = await fetch(BASE + path);
