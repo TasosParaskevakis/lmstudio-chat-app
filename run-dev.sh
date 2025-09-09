@@ -20,16 +20,29 @@ find_free_port() {
 
 cleanup() {
   echo "\nShutting down..."
-  if [[ -n "${SERVER_PID:-}" ]] && ps -p "$SERVER_PID" > /dev/null 2>&1; then
-    kill "$SERVER_PID" || true
+  # Try graceful termination of process groups first
+  if [[ -n "${SERVER_PID:-}" ]]; then
+    kill -TERM -"$SERVER_PID" 2>/dev/null || true
+    pkill -P "$SERVER_PID" 2>/dev/null || true
+    kill "$SERVER_PID" 2>/dev/null || true
   fi
-  if [[ -n "${WEB_PID:-}" ]] && ps -p "$WEB_PID" > /dev/null 2>&1; then
-    kill "$WEB_PID" || true
+  if [[ -n "${WEB_PID:-}" ]]; then
+    kill -TERM -"$WEB_PID" 2>/dev/null || true
+    pkill -P "$WEB_PID" 2>/dev/null || true
+    kill "$WEB_PID" 2>/dev/null || true
   fi
 }
 trap cleanup EXIT INT TERM
 
-SERVER_PORT=${PORT:-$(find_free_port 3001 3010)}
+SERVER_PORT=${PORT:-3001}
+if lsof -iTCP:$SERVER_PORT -sTCP:LISTEN -n -P >/dev/null 2>&1; then
+  echo "Port $SERVER_PORT in use; attempting to terminate existing process..."
+  PIDS=$(lsof -t -iTCP:$SERVER_PORT -sTCP:LISTEN -n -P || true)
+  if [[ -n "$PIDS" ]]; then
+    echo "$PIDS" | xargs -I{} kill {} 2>/dev/null || true
+    sleep 1
+  fi
+fi
 echo "Using server port: $SERVER_PORT"
 export PORT="$SERVER_PORT"
 export CORS_ORIGIN=${CORS_ORIGIN:-*}

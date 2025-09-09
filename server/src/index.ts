@@ -23,7 +23,7 @@ async function start() {
   try {
     await prisma.$connect();
     await modelManager.init();
-    app.listen(env.PORT, () => {
+    app.listen(env.PORT, '0.0.0.0', () => {
       console.log(`Server listening on http://localhost:${env.PORT}`);
     });
   } catch (e) {
