@@ -1,2 +1,6 @@
 server/prisma/dev.db
 web/node_modules/.vite/deps/_metadata.json
+server/prisma/dev.db
+web/node_modules/.vite/deps/_metadata.json
+web/node_modules/.vite/deps/react-markdown.js
+web/node_modules/.vite/deps/remark-gfm.js
